@@ -60,7 +60,21 @@ exports.addUrlToList = function(url, callback) {
 };
 
 exports.isUrlArchived = function(url, callback) {
-
+  return new Promise((resolve, reject) => {
+    fs.readdir(exports.paths.archivedSites, 'utf8', (err, files) => {
+      if (err) {
+        reject(err);
+      } else {
+        if (files.indexOf(url) > -1) {
+          callback(true);
+          resolve(true);
+        } else {
+          callback(false);
+          resolve(false);
+        }
+      } 
+    });
+  });
 };
 
 exports.downloadUrls = function(urls) {
