@@ -26,20 +26,24 @@ exports.initialize = function(pathsObj) {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
-  fs.readFile(exports.paths.list, 'utf8', (err, res) => {
-    if (err) {
-      callback(err);
-    } else {
-      let listOfUrls = res.split('\n');
-      callback(listOfUrls);
-    }
+  return new Promise((resolve, reject) => {
+    fs.readFile(exports.paths.list, 'utf8', (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        let listOfUrls = res.split('\n');
+        callback(listOfUrls);
+        resolve(listOfUrls);
+      }
+    });
   });
 };
 
 exports.isUrlInList = function(url, callback) {
-  exports.readListOfUrls((arr) => {
-    callback(arr.indexOf(url) > -1);
-  });
+  return new Promise(exports.readListOfUrls)
+    .then((urls) => {
+      callback(urls.indexOf(url) > -1);
+    });
 };
 
 exports.addUrlToList = function(url, callback) {
@@ -53,6 +57,7 @@ exports.addUrlToList = function(url, callback) {
 };
 
 exports.isUrlArchived = function(url, callback) {
+
 };
 
 exports.downloadUrls = function(urls) {
