@@ -47,12 +47,15 @@ exports.isUrlInList = function(url, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
-  fs.appendFile(exports.paths.list, url + '\n', 'utf8', (err, res) => {
-    if (err) {
-      callback(err);
-    } else {
-      callback(err, res);
-    }
+  return new Promise((resolve, reject) => {
+    fs.appendFile(exports.paths.list, url + '\n', 'utf8', (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        callback(err, res);
+        resolve(res);
+      }
+    });
   });
 };
 
